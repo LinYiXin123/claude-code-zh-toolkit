@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+logs/
+skills/logs/
+skills/skill_chinese_watch.lock
+desktop/skill-display-map.json
