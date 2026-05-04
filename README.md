@@ -1,72 +1,173 @@
 # Claude Code 中文增强工具箱
 
-这个项目把两件事整理到一起：
+Windows 便携版 Claude / Codex 桌面端中文增强项目。  
+这个项目把 **桌面端界面汉化** 和 **Slash 技能列表自动中文化** 整理到一起，方便别人拉取仓库后直接使用。
 
-1. `Claude/Codex 桌面端界面中文化`
-2. `Slash 技能列表 / 悬停说明自动中文化`
+---
 
-适合 Windows 便携版 Claude/Codex 桌面端用户使用。  
-目标是：**别人拉取你的项目后，也能把桌面端和技能列表一起汉化，并且新增技能后仍可自动显示中文。**
+## 项目目标
 
-## 我建议的仓库名
+这个项目主要解决两类问题：
 
-- `claude-code-zh-toolkit`
+1. **Claude/Codex 桌面端界面仍有大量英文**
+2. **`/` Slash 技能列表、悬停说明、后续新增技能不会自动变成中文**
 
-如果你想更像成品项目，也可以用：
+本项目的目标是：
 
-- `claude-code-desktop-zh-cn`
-- `claude-code-zh-cn-portable-kit`
-- `claude-code-ui-skill-zh`
+- 让桌面端界面尽量显示中文
+- 让 Slash 技能列表尽量显示中文
+- 让 tooltip / 悬停说明尽量显示中文
+- 让新增技能也可以自动进入中文显示
+- 尽量不影响原本功能调用
 
-我推荐你最终就用：
+---
 
-- `claude-code-zh-toolkit`
+## 效果图
+
+### 效果图 1：技能列表中文化
+
+![效果图1](docs/images/effect-1.png)
+
+### 效果图 2：桌面端界面中文显示
+
+![效果图2](docs/images/effect-2.png)
+
+### 效果图 3：更多中文化显示效果
+
+![效果图3](docs/images/effect-3.png)
+
+---
+
+## 功能特性
+
+- 桌面端显示层中文增强
+- Slash 技能列表中文化
+- 悬停说明 / tooltip 中文化
+- 已知技能固定映射中文
+- 漏网英文自动翻译
+- 自动翻译结果本地缓存
+- 新增技能自动同步中文名称与说明
+- 开机后自动监控技能目录变化
+
+---
+
+## 适用环境
+
+目前更适合以下场景：
+
+- Windows 系统
+- Claude / Codex **便携版桌面端**
+- 本地已存在可运行的桌面端目录
+- 本地安装了 Python
+
+> 更准确地说，这个项目当前主要围绕 **Windows 便携版 Claude/Codex 桌面端** 做适配。
+
+---
+
+## 我推荐的仓库描述
+
+你可以在 GitHub 仓库描述里使用这句：
+
+> Windows portable Claude/Codex desktop Chinese localization toolkit: UI translation, slash skill localization, tooltip auto-translation cache, and automatic Chinese sync for newly added skills.
+
+中文也可以写成：
+
+> Windows 便携版 Claude/Codex 桌面端中文增强工具箱：界面汉化、Slash 技能列表中文化、tooltip 自动翻译缓存、新增技能自动同步中文。
+
+---
 
 ## 项目结构
 
-- `desktop/skill-display-patch.js`
-  - 前端显示层补丁
-  - 负责把技能列表、tooltip、部分界面英文改成中文
-  - 支持自动翻译和本地缓存
+```text
+claude-code-zh-toolkit/
+├─ desktop/
+│  └─ skill-display-patch.js
+├─ docs/
+│  ├─ how-it-works.md
+│  └─ images/
+│     ├─ effect-1.png
+│     ├─ effect-2.png
+│     └─ effect-3.png
+├─ scripts/
+│  ├─ install_portable_zh.ps1
+│  └─ sync_once.cmd
+├─ skills/
+│  ├─ sync_skill_chinese.py
+│  ├─ skill_chinese_overrides.json
+│  ├─ skill_chinese_state.json
+│  └─ skill_display_map.json
+└─ README.md
+```
 
-- `skills/sync_skill_chinese.py`
-  - 技能中文同步器
-  - 自动扫描 `~/.codex/skills` 和 `~/.codex/plugins`
-  - 给技能补 `display_name`、`short_description`
-  - 生成 `技能作用.txt`
-  - 生成前端显示映射 `skill_display_map.json`
+### 各目录说明
 
-- `scripts/install_portable_zh.ps1`
-  - 安装脚本
-  - 把补丁文件复制到便携版目录
-  - 把技能同步脚本安装到用户本地 `~/.codex/tools/skill-chinese`
-  - 创建开机自启 watcher
+#### `desktop/skill-display-patch.js`
 
-- `scripts/sync_once.cmd`
-  - 手动执行一次技能中文同步
+前端显示层补丁，负责：
 
-## 适用场景
+- 替换技能列表英文名称
+- 替换 tooltip / title / aria-label
+- 对漏网英文自动翻译
+- 把自动翻译结果持久缓存到本地
 
-- 你已经有一个可运行的 Claude/Codex Windows 便携版
-- 你想让界面尽量显示中文
-- 你想让 `/` 技能列表和悬停说明尽量自动中文化
-- 你想让新增技能后也自动进入中文显示
+#### `skills/sync_skill_chinese.py`
+
+技能中文同步器，负责：
+
+- 扫描 `~/.codex/skills`
+- 扫描 `~/.codex/plugins`
+- 自动翻译技能英文名和说明
+- 写入 `display_name` / `short_description`
+- 生成 `技能作用.txt`
+- 输出前端显示映射 `skill_display_map.json`
+
+#### `scripts/install_portable_zh.ps1`
+
+安装脚本，负责：
+
+- 把补丁复制到目标便携版目录
+- 给前端页面注入补丁脚本
+- 安装技能中文同步器
+- 创建开机自启 watcher
+- 立即同步一次技能中文
+
+#### `scripts/sync_once.cmd`
+
+手动同步一次技能中文的快捷入口。
+
+---
 
 ## 安装方法
 
-### 1）先准备便携版目录
+### 第一步：准备便携版目录
 
-例如你的便携版根目录是：
+你需要先有一个已经能运行的 Claude / Codex 便携版目录。  
+例如：
 
-- `D:\ClaudeZhCN\Claude`
+```text
+D:\ClaudeZhCN\Claude
+```
 
-脚本里要传入的目录应该是：
+这个目录下面应该能看到：
 
-- `D:\ClaudeZhCN\Claude`
+```text
+resources\ion-dist
+```
 
-也就是**包含 `resources\ion-dist` 的那个目录**。
+也就是说，你传给安装脚本的目录，应该是 **包含 `resources\ion-dist` 的那个根目录**。
 
-### 2）以管理员或普通 PowerShell 运行安装脚本
+---
+
+### 第二步：克隆仓库
+
+```powershell
+git clone https://github.com/LinYiXin123/claude-code-zh-toolkit.git
+cd claude-code-zh-toolkit
+```
+
+---
+
+### 第三步：运行安装脚本
 
 示例：
 
@@ -74,86 +175,171 @@
 powershell -ExecutionPolicy Bypass -File .\scripts\install_portable_zh.ps1 -PortableRoot "D:\ClaudeZhCN\Claude"
 ```
 
-### 3）安装完成后
+安装脚本会自动：
 
-脚本会自动：
-
-- 复制前端补丁
-- 安装技能中文同步器
-- 创建开机启动 watcher
+- 复制 `skill-display-patch.js`
+- 安装技能中文同步器到 `~/.codex/tools/skill-chinese`
+- 修改便携版 `index.html`
+- 创建开机自启 watcher
 - 立即同步一次技能中文
 
-## 工作原理
+---
 
-### 一、桌面端界面中文化
+## 使用方式
 
-核心做法不是改程序逻辑，而是改**前端显示层**：
+### 1. 安装完成后直接启动桌面端
 
-- 在 `index.html` 注入 `skill-display-patch.js`
-- 监听页面 DOM 变化
-- 替换技能列表文本
-- 替换 tooltip / `title` / `aria-label`
-- 对漏网英文做自动翻译并缓存到本地
+打开你的 Claude / Codex 便携版桌面端，输入 `/`：
 
-这样做的优点：
+- 技能列表会尽量显示中文
+- tooltip / 悬停说明会尽量显示中文
 
-- 不改真实技能 ID
-- 不影响功能调用
-- 主要改变“你看到的文字”
+### 2. 如果有漏网英文
 
-### 二、技能中文化
+第一次看到某些陌生英文项时：
 
-`sync_skill_chinese.py` 会：
+- 前端补丁会尝试自动翻译
+- 自动翻译结果会缓存到本地
+- 以后再看到时会优先显示中文
 
-- 扫描 `~/.codex/skills`
-- 扫描 `~/.codex/plugins`
-- 读取 `SKILL.md`、`openai.yaml`、`plugin.json`
-- 自动翻译英文技能名和说明
-- 写回 `display_name` / `short_description`
-- 生成 `技能作用.txt`
-- 生成 `skill_display_map.json`
+### 3. 新增技能后
 
-### 三、新增技能为什么也能自动中文
+如果用户后来往 `~/.codex/skills` 或 `~/.codex/plugins` 里新增技能：
 
-因为安装脚本会创建一个 watcher：
+- watcher 会自动检测到变化
+- `sync_skill_chinese.py` 会重新生成中文映射
+- 重启应用后，新增技能也能尽量显示中文
 
-- 开机后自动运行
-- 定时检查 `~/.codex/skills` / `~/.codex/plugins`
-- 一旦发现有新增或修改，就重新生成中文映射
+---
 
-所以：
+## 手动同步一次技能中文
 
-- 新技能加入后，能自动补中文名
-- 前端补丁会读取最新映射
-- 重启电脑后仍然生效
+如果想手动执行一次同步，可以直接双击：
 
-## 注意事项
+```text
+scripts\sync_once.cmd
+```
 
-- 这个项目更适合 **Windows 便携版 Claude/Codex 桌面端**
-- 不同版本前端资源结构可能不同
-- 如果官方以后大改前端，`index.html` 注入点可能需要重新适配
-- 部分英文来自应用内部动态命令或远端注入内容，第一次出现时可能需要等几秒自动翻译缓存
-
-## 手动同步技能中文
-
-双击：
-
-- `scripts/sync_once.cmd`
-
-或者手动运行：
+或者运行：
 
 ```powershell
 python .\skills\sync_skill_chinese.py --once
 ```
 
+---
+
 ## 自定义翻译
 
 你可以手动编辑：
 
-- `skills/skill_chinese_overrides.json`
+```text
+skills/skill_chinese_overrides.json
+```
 
-用来覆盖某些技能名或说明。
+用于覆盖某些技能名或说明。
 
-## 适合你发布时的说明一句话
+例如：
 
-> 这是一个面向 Windows 便携版 Claude/Codex 桌面端的中文增强项目，包含界面显示层汉化、Slash 技能列表中文化、tooltip 自动翻译缓存，以及新增技能自动中文同步能力。
+```json
+{
+  "skills": {
+    "your-skill-name": {
+      "display_name": "你的技能中文名",
+      "short_description": "你的技能中文说明"
+    }
+  },
+  "plugins": {}
+}
+```
+
+---
+
+## 实现原理
+
+这个项目不是简单替换一份翻译文件，而是分成两层：
+
+### 1）桌面端显示层汉化
+
+通过在前端页面注入 `skill-display-patch.js`：
+
+- 监听 DOM 变化
+- 替换技能名称
+- 替换 tooltip / `title` / `aria-label`
+- 对未覆盖英文做自动翻译
+- 把翻译结果缓存到浏览器本地存储
+
+这属于 **显示层补丁**：
+
+- 不改真实技能 ID
+- 不改真实命令名
+- 不影响原本功能调用
+- 主要改变“用户看到的文字”
+
+### 2）技能元数据中文同步
+
+通过 `sync_skill_chinese.py`：
+
+- 扫描技能目录
+- 读取 `SKILL.md`、`openai.yaml`、`plugin.json`
+- 自动补中文 `display_name`
+- 自动补中文 `short_description`
+- 生成 `技能作用.txt`
+- 生成前端补丁读取的 `skill_display_map.json`
+
+### 3）为什么新增技能也能自动中文
+
+因为安装后会创建一个 watcher：
+
+- 开机自动运行
+- 轮询检测技能目录变化
+- 一旦新增或修改技能，就重新生成中文映射
+
+所以：
+
+- 新技能加入后，不需要手工一条条补
+- 关机、重启后仍然能继续工作
+
+---
+
+## 适合什么用户
+
+这个项目适合：
+
+- 想把 Windows 便携版 Claude/Codex 做中文增强的人
+- 想把技能列表也一起中文化的人
+- 想做成“别人拉仓库就能复现”的项目维护者
+
+---
+
+## 当前限制
+
+请注意：
+
+- 不同版本的便携版前端结构可能不同
+- 如果官方前端后续大改，`index.html` 注入点可能需要重新适配
+- 某些非常晚加载、远端注入、或版本特有的内部命令，第一次出现时可能仍会短暂显示英文
+- 这类漏网项通常会在自动翻译与缓存后逐渐收口
+
+---
+
+## 后续可扩展方向
+
+未来可以继续做的内容：
+
+- 增加卸载脚本
+- 增加 GUI 安装器
+- 增加更多内置命令固定映射
+- 增加版本检测和兼容提示
+- 增加便携版路径自动发现逻辑
+
+---
+
+## 致谢
+
+这个项目是在实际中文化 Windows 便携版 Claude/Codex 桌面端的过程中逐步整理出来的，目标是把“个人本机补丁”沉淀成“别人也能直接复用的项目”。
+
+---
+
+## 一句话介绍
+
+> 一个面向 Windows 便携版 Claude/Codex 桌面端的中文增强工具箱，包含界面显示层汉化、Slash 技能列表中文化、tooltip 自动翻译缓存，以及新增技能自动同步中文能力。
