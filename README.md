@@ -24,14 +24,23 @@ Windows 便携版 Claude / Codex 桌面端中文增强项目。
 
 ## 效果图
 
-下面这张是当前项目在本机实际生效的截图，**它对应的是技能列表 / 悬停说明这一类界面场景的中文化效果**，也就是你看到的英文技能列表界面的中文对照版本。
+下面展示两组前后对比图，一共四张：
 
-如果按你现在确认的对应关系来理解：
+### 1. 首页 / 语言菜单：翻译前
 
-- 英文图 1 ↔ 中文图 3：对应首页 / 语言菜单这类界面
-- 英文图 2 ↔ README 当前这张图：对应 Slash 技能列表 / 悬停说明这类界面
+![首页语言菜单翻译前](docs/images/compare-home-en.png)
 
-![当前实际效果图](docs/images/effect-skills-zh.png)
+### 2. 首页 / 语言菜单：翻译后
+
+![首页语言菜单翻译后](docs/images/compare-home-zh.png)
+
+### 3. Slash 技能列表 / 悬停说明：翻译前
+
+![技能列表翻译前](docs/images/compare-skills-en.png)
+
+### 4. Slash 技能列表 / 悬停说明：翻译后
+
+![技能列表翻译后](docs/images/compare-skills-zh.png)
 
 ---
 
@@ -340,5 +349,6 @@ skills/skill_chinese_overrides.json
 ## 一句话介绍
 
 > 一个面向 Windows 便携版 Claude/Codex 桌面端的中文增强工具箱，包含界面显示层汉化、Slash 技能列表中文化、tooltip 自动翻译缓存，以及新增技能自动同步中文能力。
+
 
 
